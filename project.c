@@ -9,10 +9,12 @@
 #include <stdbool.h>
 char str1[200] = {};
 char str[10][40] = {};
+char clipboard[200];
 void input();
 int ifexists(const char *filename);
 int main() {
     input();
+    copy();
     char *t;
     char *t1;char *t2;char *t3;
     int i,j;
@@ -27,6 +29,12 @@ int main() {
     if (strcmp(str[0], "cat") == 0){
         t = str[2];
         cat(t);}
+
+    if (strcmp(str[0], "copystr") == 0){
+
+
+    }
+
 
         return 0;
     }
@@ -138,5 +146,31 @@ void cat(char *s){
             c = fgetc(f);}}
     fclose(f);}
 
+void copy(char *str1,char *str2,char *str3,char *str4){
+    //using ftell to know how many characters file has
+    /*char filename[100];
+    sprintf(filename, "C://root//%s",str1);*/
+    char s[100];
+    FILE *f;
+    f = fopen("C://root//file.txt", "r+");
+    int i;
+    if(f==NULL)
+        printf("ERROR.");
+    else{
+        s[i] = fgetc(f);
+        while(s[i]!=EOF){
+            s[i] = fgetc(f);
+            i++;}}
+            int l =3;
+            int r =1;
+    for(i=0;i<21;i++){
+        if(s[i] == '\n'){
+            l--;}
+        if(l==0) break;
+    }
+    printf("%d",i);
+    printf("%c",s[i]);
+
+}
 
 
