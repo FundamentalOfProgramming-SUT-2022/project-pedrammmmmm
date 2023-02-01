@@ -9,17 +9,15 @@
 #include <stdbool.h>
 char str1[200] = {};
 char str[10][40] = {};
-char clipboard[200];
+char clipboard[50000];
 void input();
 int ifexists(const char *filename);
 int main() {
     input();
-    copy();
     char *t;
     char *t1;char *t2;char *t3;
     int i,j;
     if (strcmp(str[0], "createfile") == 0){
-        //////////////
         t = str[2];
         createfile(t);}
 
@@ -30,9 +28,8 @@ int main() {
         t = str[2];
         cat(t);}
 
-    if (strcmp(str[0], "copystr") == 0){
-
-
+   if (strcmp(str[0], "copystr") == 0){
+       copy(str[2],str[4],str[6],str[7]);
     }
 
 
@@ -146,13 +143,21 @@ void cat(char *s){
             c = fgetc(f);}}
     fclose(f);}
 
+
 void copy(char *str1,char *str2,char *str3,char *str4){
-    //using ftell to know how many characters file has
-    /*char filename[100];
-    sprintf(filename, "C://root//%s",str1);*/
-    char s[100];
+    FILE *fp;
+    fp = fopen("C://root//file.txt", "r+");
+   fseek(fp, 0, SEEK_END);
+   int h = ftell(fp);
+    fclose(fp);
+
+    char s[50000];
+    char filename[100];
+    sprintf(filename, "C://root//%s",str1);
     FILE *f;
-    f = fopen("C://root//file.txt", "r+");
+    f = fopen(filename, "r+");
+     int l,r;
+     sscanf(str2,"%d:%d",&l,&r);
     int i;
     if(f==NULL)
         printf("ERROR.");
@@ -161,15 +166,35 @@ void copy(char *str1,char *str2,char *str3,char *str4){
         while(s[i]!=EOF){
             s[i] = fgetc(f);
             i++;}}
-            int l =3;
-            int r =1;
-    for(i=0;i<21;i++){
+    for(i=0;i<h;i++){
         if(s[i] == '\n'){
             l--;}
         if(l==0) break;
     }
-    //i+1
+    int j;
+    int z=0;
+    int size;
+    sscanf(str3,"%d:%d",&size);
+    int x1 = (i+1+r);
+    char temp;
+    if (strcmp(str4, "-f") == 0){
+        int x2 = x1 + size;
+        for(j=x1;j<x2;j++){
+        temp = s[j];
+        s[j] = clipboard[z];
+        clipboard[z] = temp;
+        z++;
+    }}
+    if (strcmp(str4, "-b") == 0){
+        int x2 = x1 - size;
+        for(j=x1;j>x2;j--){
+        temp = s[j];
+        s[j] = clipboard[z];
+        clipboard[z] = temp;
+        z++;}
+        strrev(clipboard);}
+    }
 
-}
+
 
 
