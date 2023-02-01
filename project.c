@@ -168,8 +168,7 @@ void copy(char *str1,char *str2,char *str3,char *str4){
             l--;}
         if(l==0) break;
     }
-    printf("%d",i);
-    printf("%c",s[i]);
+    //i+1
 
 }
 
