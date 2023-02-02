@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -10,8 +11,19 @@
 char str1[200] = {};
 char str[10][40] = {};
 char clipboard[50000];
+
+
+
 void input();
+void createfile(char *s);
 int ifexists(const char *filename);
+void insert(char *s1,char *s2,char *s3);
+void cat(char *s);
+void copy(char *str1,char *str2,char *str3,char *str4);
+void remstr(char *str1,char *str2,char *str3,char *str4);
+char *readf(char *filename);
+
+
 int main() {
     input();
     char *t;
@@ -28,13 +40,38 @@ int main() {
         t = str[2];
         cat(t);}
 
-   if (strcmp(str[0], "copystr") == 0){
+    if (strcmp(str[0], "copystr") == 0){
        copy(str[2],str[4],str[6],str[7]);
+    }
+
+    if (strcmp(str[0], "removestr") == 0){
+        remstr(str[2],str[4],str[6],str[7]);
     }
 
 
         return 0;
     }
+
+char *readf(char *filename){
+   FILE *f;
+   f = fopen(filename,"r");
+   if(f == NULL)
+        return NULL;
+   fseek(f,0,SEEK_END);
+   int h = ftell(f);
+   fseek(f,0,SEEK_SET);
+
+   char *string = malloc(sizeof(char) * (h+1));
+   char c;
+   int i=0;
+   while((c=fgetc(f))!=EOF){
+        string[i] = c;
+        i++;
+   }
+   string[i]='\0';
+   fclose(f);
+   return string;}
+
 
 int ifexists(const char *filename){
      struct stat buffer;
@@ -145,8 +182,10 @@ void cat(char *s){
 
 
 void copy(char *str1,char *str2,char *str3,char *str4){
+    char filname[100];
+    sprintf(filname, "C://root//%s",str1);
     FILE *fp;
-    fp = fopen("C://root//file.txt", "r+");
+    fp = fopen(filname, "r+");
    fseek(fp, 0, SEEK_END);
    int h = ftell(fp);
     fclose(fp);
@@ -193,7 +232,65 @@ void copy(char *str1,char *str2,char *str3,char *str4){
         clipboard[z] = temp;
         z++;}
         strrev(clipboard);}
+
     }
+
+void remstr(char *s1,char *s2,char *s3,char *s4){
+    char filename[100];
+    sprintf(filename, "C://root//%s",s1);
+    FILE *f;
+    f = fopen(filename, "r+");
+     int l,r;
+     int b;
+     sscanf(s2,"%d:%d",&l,&r);
+     l--;
+     char *res = readf(filename);
+     int i;
+     for(i=0;res[i]!=NULL;i++){
+        if(res[i]=='\n'){
+            l--;
+                   }
+        if(l==0){
+            b=i;}
+     }
+     int size;
+     sscanf(s3,"%d",&size);
+     int n;
+     n = strlen(res);
+     int x1 = b+2+r;
+
+     if (strcmp(s4, "-b") == 0){
+     int x2 = x1 - size;
+     int d = x1-x2;
+     while(d){
+     for(i=x2;i<n;i++)
+        res[i] = res[i+1];
+        n--;
+        d--;}}
+    if (strcmp(s4, "-f") == 0){
+     int x2 = x1 + size;
+     int d = x2-x1;
+     while(d){
+     for(i=x1;i<n;i++)
+        res[i] = res[i+1];
+        n--;
+        d--;}}
+    int n1 = strlen(res);
+    fclose(f);
+    FILE *f1;
+    f1 = fopen(filename, "w");
+    for(i=0;i<=n;i++){
+        fputc(res[i],f1);
+    }
+    fclose(f1);
+}
+
+
+
+
+
+
+
 
 
 
