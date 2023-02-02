@@ -22,9 +22,11 @@ void cat(char *s);
 void copy(char *str1,char *str2,char *str3,char *str4);
 void remstr(char *str1,char *str2,char *str3,char *str4);
 char *readf(char *filename);
-
+void textcoimprator(char *s1,char *s2);
 
 int main() {
+
+
     input();
     char *t;
     char *t1;char *t2;char *t3;
@@ -41,11 +43,17 @@ int main() {
         cat(t);}
 
     if (strcmp(str[0], "copystr") == 0){
-       copy(str[2],str[4],str[6],str[7]);
-    }
+       copy(str[2],str[4],str[6],str[7]);}
 
     if (strcmp(str[0], "removestr") == 0){
-        remstr(str[2],str[4],str[6],str[7]);
+        remstr(str[2],str[4],str[6],str[7]);}
+
+    if (strcmp(str[0], "cutstr") == 0){
+        copy(str[2],str[4],str[6],str[7]);
+        remstr(str[2],str[4],str[6],str[7]);}
+
+    if (strcmp(str[0], "compare") == 0){
+        textcoimprator(str[1],str[2]);
     }
 
 
@@ -118,8 +126,9 @@ void createfile(char *s){
     f = fopen(filename,"w");
     fclose(f);}}
 
-
 void insert(char *s1,char *s2,char *s3){
+
+        char t[300];
         char *pt3;
         char *fname;
         char filename[100];
@@ -134,9 +143,18 @@ void insert(char *s1,char *s2,char *s3){
 
         sprintf(filename, "C://root//%s", fname);
 
+         FILE *f;
+        f = fopen(filename,"r");
+   if(f == NULL)
+        return NULL;
+   fseek(f,0,SEEK_END);
+   int h = ftell(f);
+   fseek(f,0,SEEK_SET);
+        char *a = readf(filename);
+        fclose(f);
+
         int i;
         int n = strlen(s2);
-        FILE *f;
         f = fopen(filename,"w+");
         int j,k;
         for(j=0;j<l;j++){
@@ -162,7 +180,15 @@ void insert(char *s1,char *s2,char *s3){
         default:
             fputc(c,f);
         }}
-        fclose(f);}
+
+        fseek(f,0,SEEK_SET);
+        int n1 = strlen(a);
+        for(i=0;i<n1;i++){
+        fputc(a[i],f);
+    }
+    fclose(f);
+}
+
 
 
 void cat(char *s){
@@ -283,7 +309,80 @@ void remstr(char *s1,char *s2,char *s3,char *s4){
         fputc(res[i],f1);
     }
     fclose(f1);
+    free(res);
 }
+
+void textcoimprator(char *s1,char *s2){
+    char data[100][1000];
+    char filename1[100];
+    sprintf(filename1, "C://root//%s",s1);
+    char data2[100][1000];
+    char filename2[100];
+    sprintf(filename2, "C://root//%s",s2);
+    FILE *f1;
+    f1 = fopen(filename1,"r");
+    if(f1==NULL){
+        printf("ERROR.");
+        return 1;}
+
+    int line = 0;
+    while(!feof(f1) && !ferror(f1)){
+            if(fgets(data[line],1000,f1)!=NULL){
+                line++;
+            }}
+    fclose(f1);
+
+    FILE *f2;
+    f2 = fopen(filename2,"r");
+    if(f2==NULL){
+        printf("ERROR.");}
+
+    int line2 = 0;
+    while(!feof(f2) && !ferror(f2)){
+            if(fgets(data2[line2],1000,f2)!=NULL){
+                line2++;
+            }}
+    fclose(f2);
+
+    int d;
+    if(line>line2){
+        d = line2;}
+    else if(line2>line){
+        d = line;}
+    else{
+        d = line;}
+    int a[1000];
+    int i;
+    int c = 0;
+    int j = 0;
+    for(i=0;i<d;i++){
+        if(strcmp(data[i],data2[i]) != 0){
+            c++;
+            a[j] = i;
+            j++;
+        }
+    }
+    int k = j;
+    printf("============ #%d ============\n",c);
+    for(j=0;j<k;j++){
+        printf("%s",data[a[j]]);
+        if(j==k-1)
+            printf("\n");
+        printf("%s\n",data2[a[j]]);
+    }
+
+    if(line2>line){
+        printf(">>>>>>>>>>>> #%d - #%d >>>>>>>>>>>>\n",line+1,line2-1);
+        for(i=line;i<line2;i++){
+            printf("%s",data2[i]);}}
+    if(line2<line){
+        printf(">>>>>>>>>>>> #%d - #%d >>>>>>>>>>>>\n",line+1,line2-1);
+        for(i=line2;i<line;i++){
+            printf("%s",data[i]);}}
+
+}
+
+
 
 
 
