@@ -25,7 +25,8 @@ char *copy(char *str1,char *str2,char *str3,char *str4);
 void remstr(char *str1,char *str2,char *str3,char *str4);
 char *readf(char *filename);
 void textcoimprator(char *s1,char *s2);
-
+void copymaker(char *s);
+void revcopymaker(char *s);
 
 int main() {
     int x = input();
@@ -36,6 +37,7 @@ int main() {
         createfile(str[2]);}
 
     if (strcmp(str[0], "insertstr") == 0){
+        copymaker(str[2]);
 
     int n = strlen(str[4]);
         char s[100];
@@ -67,9 +69,11 @@ int main() {
        }
 
     if (strcmp(str[0], "removestr") == 0){
+        copymaker(str[2]);
         remstr(str[2],str[4],str[6],str[7]);}
 
     if (strcmp(str[0], "cutstr") == 0){
+        copymaker(str[2]);
         copy(str[2],str[4],str[6],str[7]);
         remstr(str[2],str[4],str[6],str[7]);}
 
@@ -86,29 +90,67 @@ int main() {
                printf("\n");}}}}
 
     if (strcmp(str[0], "pastestr") == 0){
-        puts(qwe);
+        copymaker(str[2]);
         insert(str[2],qwe,str[4]);
+    }
+
+    if (strcmp(str[0], "undo") == 0){
+        revcopymaker(str[2]);
     }
 
     /*if (strcmp(str[0], "tree") == 0){
     }*/
 
 
-
-
-
         return 0;
     }
 
+
+void copymaker(char *s){
+    char filname[100];
+    sprintf(filname, "C://%s",s);
+    FILE *f;
+    FILE *f2;
+    f = fopen(filname,"r");
+    f2 = fopen("c://backup//temp.txt","w");
+    char c;
+    c = fgetc(f);
+    while (c != EOF)
+    {
+        fputc(c,f2);
+        c = fgetc(f);
+    }
+    fclose(f);
+    fclose(f2);
+
+}
+
+void revcopymaker(char *s){
+     char filname[100];
+    sprintf(filname, "C://%s",s);
+    FILE *f;
+    FILE *f2;
+    f = fopen(filname,"w");
+    f2 = fopen("c://backup//temp.txt","r");
+    char c;
+    c = fgetc(f2);
+    while (c != EOF)
+    {
+        fputc(c,f);
+        c = fgetc(f2);
+    }
+    fclose(f2);
+    fclose(f);
+}
 
 
 void insert(char *s1,char *s2,char *s3){
     char filname[100];
     sprintf(filname, "C://%s",s1);
-    FILE *firstfile;
-    FILE *secondfile;
-        firstfile = fopen(filname,"r");
-        secondfile = fopen("temp.txt","w");
+    FILE *f1;
+    FILE *f2;
+        f1 = fopen(filname,"r");
+        f2 = fopen("temp.txt","w");
         int l,r;
         char c;
         sscanf(s3,"%d:%d",&l,&r);
@@ -116,17 +158,17 @@ void insert(char *s1,char *s2,char *s3){
     int i=0;
     int j=0;
     while (i != l){
-        c = fgetc(firstfile);
+        c = fgetc(f1);
         if(c == EOF){
             c = '\n';}
-        fputc(c,secondfile);
+        fputc(c,f2);
         if(c == '\n'){
             i++;}}
     while (j != r){
-        c = fgetc(firstfile);
+        c = fgetc(f1);
         if(c == EOF){
             c = ' ';}
-        fputc(c,secondfile);
+        fputc(c,f2);
 
         j++;}
         char q;
@@ -135,33 +177,33 @@ void insert(char *s1,char *s2,char *s3){
             switch(q){
             case '\\':
             if((s2[i+1]) == '\\' && s2[i+2] == 'n'){
-            fprintf(secondfile,"\\n");
+            fprintf(f2,"\\n");
             i+=2;
                 break;}
             else if((s2[i+1]) == 'n'){
-            fprintf(secondfile,"\n");
+            fprintf(f2,"\n");
             i++;
             break;}
         default:
-            fputc(s2[i],secondfile);
+            fputc(s2[i],f2);
         }}
 
-        c = fgetc(firstfile);
+        c = fgetc(f1);
         while(c != EOF){
-            fputc(c,secondfile);
-            c = fgetc(firstfile);
+            fputc(c,f2);
+            c = fgetc(f1);
         }
-        fclose(firstfile);
-        fclose(secondfile);
+        fclose(f1);
+        fclose(f2);
 
-        firstfile = fopen(filname,"w");
-        secondfile = fopen("temp.txt","r");
-        c = fgetc(secondfile);
+        f1 = fopen(filname,"w");
+        f2 = fopen("temp.txt","r");
+        c = fgetc(f2);
         while (c != EOF){
-        fputc(c,firstfile);
-        c = fgetc(secondfile);}
-        fclose(secondfile);
-        fclose(firstfile);
+        fputc(c,f1);
+        c = fgetc(f2);}
+        fclose(f2);
+        fclose(f1);
 }
 
 
@@ -496,6 +538,11 @@ void textcoimprator(char *s1,char *s2){
         return 1;
     }
 }*/
+
+void undo(char *s){
+    revcopymaker(s);
+
+}
 
 
 
